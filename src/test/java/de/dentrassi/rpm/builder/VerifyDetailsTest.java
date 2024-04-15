@@ -12,28 +12,27 @@ package de.dentrassi.rpm.builder;
 
 import org.eclipse.packager.rpm.VerifyFlags;
 import org.eclipse.packager.rpm.build.FileInformation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertArrayEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * See https://github.com/ctron/rpm-builder/issues/41
  */
-public class VerifyDetailsTest {
+class VerifyDetailsTest {
     /**
      * Verify that empty {@link VerifyDetails} result in empty set of {@link VerifyFlags}.
      */
     @Test
-    public void applyEmpty() {
+    void applyEmpty() {
         final VerifyDetails verifyDetails = new VerifyDetails();
         doTest(new VerifyFlags[]{}, verifyDetails);
     }
 
     @Test
-    public void applyUserOrGroupy() {
+    void applyUserOrGroupy() {
         final VerifyDetails verifyDetails = new VerifyDetails();
         verifyDetails.setUser(true);
         verifyDetails.setGroup(true);
@@ -45,7 +44,7 @@ public class VerifyDetailsTest {
      * {@link VerifyFlags#LINKTO}.
      */
     @Test
-    public void applyLinktoTrue() {
+    void applyLinktoTrue() {
         final VerifyDetails verifyDetails = new VerifyDetails();
         verifyDetails.setLinkto(true);
         doTest(new VerifyFlags[]{VerifyFlags.LINKTO}, verifyDetails);
@@ -58,7 +57,7 @@ public class VerifyDetailsTest {
      * @see EntryDetailsTest#applyReadmeFalse()
      */
     @Test
-    public void applyLinktoFalse() {
+    void applyLinktoFalse() {
         final VerifyDetails verifyDetails = new VerifyDetails();
         verifyDetails.setLinkto(false);
         doTest(new VerifyFlags[]{}, verifyDetails);
@@ -69,16 +68,16 @@ public class VerifyDetailsTest {
      * in a null VerifyDetails (as opposed to an empty set).
      */
     @Test
-    public void noApply() {
+    void noApply() {
         final FileInformation fileInformation = new FileInformation();
         final Set<VerifyFlags> verifyFlags = fileInformation.getVerifyFlags();
-        assertNull(verifyFlags);
+        assertThat(verifyFlags).isNull();
     }
 
     private static void doTest(VerifyFlags[] expectedResult, final VerifyDetails verifyDetails) {
         final FileInformation fileInformation = new FileInformation();
         verifyDetails.apply(fileInformation);
         final Set<VerifyFlags> verifyFlags = fileInformation.getVerifyFlags();
-        assertArrayEquals(expectedResult, verifyFlags.toArray());
+        assertThat(verifyFlags.toArray()).isEqualTo(expectedResult);
     }
 }
